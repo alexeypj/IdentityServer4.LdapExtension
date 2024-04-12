@@ -158,7 +158,8 @@ namespace IdentityServer.LdapExtension
             // Could become async
             foreach (var matchConfig in allSearcheable)
             {
-                using var ldapConnection = new LdapConnection { SecureSocketLayer = matchConfig.Ssl };
+                var options = new LdapConnectionOptions().ConfigureRemoteCertificateValidationCallback((_, _, _, _) => true);
+                using var ldapConnection = new LdapConnection(options) { SecureSocketLayer = matchConfig.Ssl };
                 ldapConnection.Connect(matchConfig.Url, matchConfig.FinalLdapConnectionPort);
                 ldapConnection.Bind(matchConfig.BindDn, matchConfig.BindCredentials);
                 
